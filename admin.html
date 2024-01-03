@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Is Dave happy?</title>
+    <link rel="icon" type="image/x-icon" href="/daves/standard_happy_dave.png">
+    <link rel="stylesheet" type="text/css" href="/resources/style.css">
+</head>
+<body>
+    <div class="container">
+        
+        <div id="passwordSection">
+            <h1>Should you be here?</h1>
+            <input type="password" id="passwordInput" placeholder="Enter password" />
+            <button onclick="checkPassword()">Submit</button>
+        </div>
+        
+        <div class="button-group" id="moodButtons">
+            <h1>Is Dave happy?</h1>
+            <button id="happy" onclick="setMood(this)">Yes</button>
+            <button id="sad" onclick="setMood(this)">No</button>
+        </div>
+        
+        <div class="button-group" id="seasonButtons">
+            <h1>Theme?</h1>
+            <button id="standard" onclick="setSeason(this)">Standard</button>
+            <button id="christmas" onclick="setSeason(this)">Christmas</button>
+        </div>
+    </div>
+
+    <script src="/resources/script.js"></script>
+</body>
+</html>
