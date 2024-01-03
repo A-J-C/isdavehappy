@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
+const redis = require('redis');
 const app = express();
 const port = process.env.PORT || 8080;
 
-let season = 'standard';
-let mood = 'happy';
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL 
+});
+
+redisClient.connect();
 
 app.use(express.json());
 
@@ -20,16 +24,14 @@ app.get('/admin', (_req, res) => {
   serveFile('admin.html', res);
 });
 
-app.get('/get_dave', (_req, res) => {
-  res.sendFile(__dirname + `/public/daves/${season}_${mood}_dave.png`);
-});
-
-app.get('/get_states', (_req, res) => {
-  const states = {
-      season: season, 
-      mood: mood
-  };
-  res.json(states);
+app.get('/get_states', async (_req, res) => {
+  try {
+    const season = await redisClient.get('season') || 'standard';
+    const mood = await redisClient.get('mood') || 'happy';
+    res.json({ season, mood });
+  } catch (err) {
+    res.status(500).send('Error fetching states');
+  }
 });
 
 function isPasswordValid(providedPassword) {
@@ -45,17 +47,17 @@ app.post('/check_password', (req, res) => {
   }
 });
 
-function setState(req, res, stateType) {
+async function setState(req, res, stateType) {
   const newState = req.body[stateType];
 
   if (isPasswordValid(req.body.password)) {
       if (newState) {
-          if (stateType === 'mood') {
-              mood = newState;
-          } else if (stateType === 'season') {
-              season = newState;
+          try {
+              await redisClient.set(stateType, newState);
+              res.send(`${stateType} updated to: ${newState}`);
+          } catch (err) {
+              res.status(500).send('Error updating state');
           }
-          res.send(`${stateType} updated to: ${newState}`);
       } else {
           res.status(400).send(`Invalid request: no ${stateType} provided`);
       }

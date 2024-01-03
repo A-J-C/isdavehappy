@@ -38,6 +38,7 @@ function startConfetti() {
   fetch('/get_states')
       .then(response => response.json())
       .then(data => {
+        document.getElementById("davePic").src = `daves/${data.season}_${data.mood}_dave.png`;
           if (data.season === 'christmas') {
               setInterval(snow, 10);
           } else if (data.season === 'standard') {
