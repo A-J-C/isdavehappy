@@ -56,7 +56,8 @@ function startConfetti() {
           }
       })
       .catch(error => {
-          console.error('Error fetching states:', error);
+        document.getElementById("davePic").src = `daves/standard_happy_dave.png`;
+        console.error('Error fetching states:', error);
       });
 }
 
